@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget
+from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog
 from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui
 import sys
@@ -31,7 +31,8 @@ class window(QMainWindow):
 
 
     def initUI_form2(self):
-        self.form=QMainWindow()
+        self.form=QDialog()
+        self.form.setModal(True)
 
 
         self.range_ot=QSpinBox()
@@ -59,20 +60,61 @@ class window(QMainWindow):
 
 
         self.table_data=QTableWidget()
+        self.table_data.setColumnCount(2)
+        self.table_data.setHorizontalHeaderLabels(["Название","Путь"])
 
+        self.prizes_layout=QHBoxLayout()
+        self.prizes_name=QLabel()
+        self.prizes_name.setText("Название")
+        self.prizes_name_edit=QLineEdit()
+
+        self.prizes_put=QLabel()
+        self.prizes_put.setText("Путь")
+        self.prizes_put_edit=QLineEdit()
+        self.bt_open_file=QPushButton()
+        self.bt_open_file.setText("...")
+        self.bt_open_file.clicked.connect(self.open_file)
+
+        # self.bt_delete_layout=QPushButton()
+        # self.bt_delete_layout.setText("X")
+        # self.bt_delete_layout.clicked.connect(self.delete_prizes)
+
+        self.prizes_layout.addWidget(self.prizes_name)
+        self.prizes_layout.addWidget(self.prizes_name_edit)
+        self.prizes_layout.addWidget(self.prizes_put)
+        self.prizes_layout.addWidget(self.prizes_put_edit)
+        self.prizes_layout.addWidget(self.bt_open_file)
+        # self.prizes_layout.addWidget(self.bt_delete_layout)
+
+        self.bt_add_prize=QPushButton()
+        self.bt_add_prize.setText("Добавить призы")
 
 
         self.main_layout=QGridLayout()
         self.main_layout.addLayout(range_layout_text,0,0)
         self.main_layout.addLayout(range_layout,1,0)
         self.main_layout.addWidget(self.table_data,2,0)
+        self.main_layout.addLayout(self.prizes_layout,3,0)
+        self.main_layout.addWidget(self.bt_add_prize)
 
         central_widget=QWidget()
         central_widget.setLayout(self.main_layout)
-        self.form.setCentralWidget(central_widget)
+        self.form.setLayout(self.main_layout)
+        # self.form.setCentralWidget(central_widget)
 
     def form2_show(self):
+
         self.form.show()
+
+
+    def open_file(self):
+        name=QFileDialog.getOpenFileName(self,"Выбор папки",'')[0]
+        self.prizes_put_edit.setText(name)
+
+    def add_prize(self):
+        name=self.prizes_name_edit.text()
+        put=self.prizes_put_edit.text()
+
 
 
 if __name__=="__main__":
