@@ -74,6 +74,10 @@ class window(QMainWindow):
         self.bt_open_file=QPushButton()
         self.bt_open_file.setText("...")
         self.bt_open_file.clicked.connect(self.open_file)
+        self.prizes_count=QLabel()
+        self.prizes_count.setText("Количество")
+        self.prizes_count_edit=QSpinBox()
+        self.prizes_count_edit.setMinimum(1)
 
         # self.bt_delete_layout=QPushButton()
         # self.bt_delete_layout.setText("X")
@@ -84,10 +88,13 @@ class window(QMainWindow):
         self.prizes_layout.addWidget(self.prizes_put)
         self.prizes_layout.addWidget(self.prizes_put_edit)
         self.prizes_layout.addWidget(self.bt_open_file)
+        self.prizes_layout.addWidget(self.prizes_count)
+        self.prizes_layout.addWidget(self.prizes_count_edit)
         # self.prizes_layout.addWidget(self.bt_delete_layout)
 
         self.bt_add_prize=QPushButton()
         self.bt_add_prize.setText("Добавить призы")
+        self.bt_add_prize.clicked.connect(self.add_prize)
 
 
         self.main_layout=QGridLayout()
@@ -108,12 +115,16 @@ class window(QMainWindow):
 
 
     def open_file(self):
-        name=QFileDialog.getOpenFileName(self,"Выбор папки",'')[0]
+        name=QFileDialog.getOpenFileName(self,"Выбор папки","","Файлы изображений (*.png *.jpg *.bmp)")[0]
         self.prizes_put_edit.setText(name)
 
     def add_prize(self):
         name=self.prizes_name_edit.text()
         put=self.prizes_put_edit.text()
+        count=self.prizes_count_edit.text()
+
+
+        # print(name,put,count)
 
 
 
