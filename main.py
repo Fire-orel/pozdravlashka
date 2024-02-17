@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog
+from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog,QTableWidgetItem
 from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui
 import sys
@@ -60,8 +60,10 @@ class window(QMainWindow):
 
 
         self.table_data=QTableWidget()
-        self.table_data.setColumnCount(2)
-        self.table_data.setHorizontalHeaderLabels(["Название","Путь"])
+        self.table_data.setColumnCount(3)
+        self.table_data.setHorizontalHeaderLabels(["Название","Путь","Количество"])
+        self.table_data.horizontalHeader().setStretchLastSection(True)
+        # self.table_data.resizeColumnsToContents()
 
         self.prizes_layout=QHBoxLayout()
         self.prizes_name=QLabel()
@@ -122,6 +124,17 @@ class window(QMainWindow):
         name=self.prizes_name_edit.text()
         put=self.prizes_put_edit.text()
         count=self.prizes_count_edit.text()
+
+        row=self.table_data.rowCount()
+        self.table_data.setRowCount(row+1)
+
+        self.table_data.setItem(row,0,QTableWidgetItem(name))
+        self.table_data.setItem(row,1,QTableWidgetItem(put))
+        self.table_data.setItem(row,2,QTableWidgetItem(count))
+
+        self.prizes_name_edit.setText("")
+        self.prizes_put_edit.setText("")
+        
 
 
         # print(name,put,count)
