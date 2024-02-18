@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog,QTableWidgetItem
+from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog,QTableWidgetItem,QMessageBox,QDialogButtonBox
 from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui
 import sys
@@ -8,25 +8,45 @@ class window(QMainWindow):
         super().__init__()
         self.initUI_form1()
         self.initUI_form2()
+        self.masiv_prizes={}
 
     def initUI_form1(self):
         self.setWindowTitle("Рандомайзер подарков")
-        self.showMaximized()
+
         self.setting_layout=QHBoxLayout(self)
         self.bt_settings=QPushButton("Настройки",self)
         self.setting_layout.addStretch()
         self.setting_layout.addWidget(self.bt_settings)
         self.bt_settings.clicked.connect(self.form2_show)
 
+
+        self.name_layout=QHBoxLayout()
+        self.name_prizes=QLabel("test")
+        self.name_prizes.setFont(QtGui.QFont("Times",20))
+        self.name_layout.addStretch()
+        self.name_layout.addWidget(self.name_prizes)
+        self.name_layout.addStretch()
+
+
+        self.bt_layout=QHBoxLayout()
+        self.bt_start=QPushButton("Старт")
+        self.bt_start.setFont(QtGui.QFont("Times",20))
+        self.bt_layout.addWidget(self.bt_start)
+
+
         main_layout=QVBoxLayout(self)
         main_layout.addLayout(self.setting_layout)
+        main_layout.addLayout(self.name_layout)
         main_layout.addStretch()
+        main_layout.addLayout(self.bt_layout)
 
         central_widget=QWidget()
         central_widget.setLayout(main_layout)
 
 
         self.setCentralWidget(central_widget)
+
+        self.showMaximized()
 
 
 
@@ -37,8 +57,10 @@ class window(QMainWindow):
 
         self.range_ot=QSpinBox()
         self.range_ot.setMinimum(1)
+        self.range_ot.setMaximum(10000000)
         self.range_do=QSpinBox()
         self.range_do.setMinimum(2)
+        self.range_do.setMaximum(10000000)
         self.label_range=QLabel()
 
         self.label_range.setText("Диапазон участников")
@@ -80,6 +102,8 @@ class window(QMainWindow):
         self.prizes_count.setText("Количество")
         self.prizes_count_edit=QSpinBox()
         self.prizes_count_edit.setMinimum(1)
+        self.prizes_count_edit.setMaximum(10000000)
+        self.prizes_count_edit.setFixedWidth(100)
 
         # self.bt_delete_layout=QPushButton()
         # self.bt_delete_layout.setText("X")
@@ -98,13 +122,31 @@ class window(QMainWindow):
         self.bt_add_prize.setText("Добавить призы")
         self.bt_add_prize.clicked.connect(self.add_prize)
 
+        self.bt_delete_prize=QPushButton()
+        self.bt_delete_prize.setText("Удалить")
+        self.bt_delete_prize.clicked.connect(self.delete_data_table)
+
+        self.upravlenie_bt=QHBoxLayout()
+        self.upravlenie_bt.addWidget(self.bt_add_prize)
+        self.upravlenie_bt.addWidget(self.bt_delete_prize)
+
+        self.bt_save_prize=QPushButton()
+        self.bt_save_prize.setText("Сохранить")
+        self.bt_save_prize.clicked.connect(self.save)
+
+
+
+        self.mail_text=QLabel()
+        self.mail_text.hide()
 
         self.main_layout=QGridLayout()
         self.main_layout.addLayout(range_layout_text,0,0)
         self.main_layout.addLayout(range_layout,1,0)
         self.main_layout.addWidget(self.table_data,2,0)
         self.main_layout.addLayout(self.prizes_layout,3,0)
-        self.main_layout.addWidget(self.bt_add_prize)
+        self.main_layout.addLayout(self.upravlenie_bt,4,0)
+        self.main_layout.addWidget(self.bt_save_prize)
+        self.main_layout.addWidget(self.mail_text)
 
         central_widget=QWidget()
         central_widget.setLayout(self.main_layout)
@@ -121,26 +163,86 @@ class window(QMainWindow):
         self.prizes_put_edit.setText(name)
 
     def add_prize(self):
-        name=self.prizes_name_edit.text()
-        put=self.prizes_put_edit.text()
-        count=self.prizes_count_edit.text()
+        name = self.prizes_name_edit.text()
+        put = self.prizes_put_edit.text()
+        count = self.prizes_count_edit.text()
 
+        if name != "" and put != "":
+            self.mail_text.setText("")
+            self.mail_text.hide()
+            row=self.table_data.rowCount()
+            self.table_data.setRowCount(row+1)
+
+            self.table_data.setItem(row,0,QTableWidgetItem(name))
+            self.table_data.setItem(row,1,QTableWidgetItem(put))
+            self.table_data.setItem(row,2,QTableWidgetItem(count))
+
+            self.prizes_name_edit.setText("")
+            self.prizes_put_edit.setText("")
+            self.prizes_count_edit.setValue(1)
+
+        else:
+            self.mail_text.show()
+            self.mail_text.setText("Не все поля заполнены!!!!")
+
+    def save(self):
         row=self.table_data.rowCount()
-        self.table_data.setRowCount(row+1)
 
-        self.table_data.setItem(row,0,QTableWidgetItem(name))
-        self.table_data.setItem(row,1,QTableWidgetItem(put))
-        self.table_data.setItem(row,2,QTableWidgetItem(count))
+        suma_prize=0
+        for i in range(row):
+            suma_prize+=int(self.table_data.item(i,2).text())
 
-        self.prizes_name_edit.setText("")
-        self.prizes_put_edit.setText("")
-        
+        if suma_prize<=int(self.range_do.text()):
+            # self.mail_text.show()
+            # self.mail_text.setText("1")
+            row=self.table_data.rowCount()
+            self.masiv_prizes["row_count"]=row
+            self.masiv_prizes["prize_data"]=[]
+
+            for i in range(row):
+                prize={}
+                prize["id"]=row+1
+                prize["name"]=self.table_data.item(i,0).text()
+                prize["image"]=self.table_data.item(i,1).text()
+                prize["count"]=self.table_data.item(i,2).text()
+                self.masiv_prizes["prize_data"].append(prize)
+
+            self.form.close()
+
+
+
+        else:
+            self.mail_text.show()
+            self.mail_text.setText("0")
+
 
 
         # print(name,put,count)
 
 
+    def delete_data_table(self):
+        row = self.table_data.currentRow()
 
+        if row == -1:
+            msg = QMessageBox.question(
+                self,
+                'Message',
+                "Выберите строку, которую вы хотите удалить.",
+                QDialogButtonBox.Ok
+            )
+            return
+        else:
+            msg = QMessageBox.question(
+                self,
+                "Внимание подтвердите удаление строки!",
+                "Вы действительно хотите удалить "
+                f"строку <b style='color: red;'>{row+1}</b> ?"
+            )
+            # print(msg)
+            if msg == 65536:
+                return
+
+            self.table_data.removeRow(row)
 if __name__=="__main__":
     app=QApplication(sys.argv)
     ex=window()
