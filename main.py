@@ -2,13 +2,16 @@ from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLa
 from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui
 import sys
-
+from random import choice
+import time
 class window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI_form1()
         self.initUI_form2()
         self.masiv_prizes={}
+        self.masiv_uchastnikov=[]
+        self.prize_id=""
 
     def initUI_form1(self):
         self.setWindowTitle("Рандомайзер подарков")
@@ -21,27 +24,96 @@ class window(QMainWindow):
 
 
         self.name_layout=QHBoxLayout()
-        self.name_prizes=QLabel("test")
+        self.name_prizes=QLabel("Стартовый текст")
         self.name_prizes.setFont(QtGui.QFont("Times",20))
         self.name_layout.addStretch()
         self.name_layout.addWidget(self.name_prizes)
         self.name_layout.addStretch()
 
+        self.image_layout=QHBoxLayout()
+        self.image_label=QLabel()
+        self.image=QPixmap("start_image.png")
+        self.image_label.setPixmap(self.image)
+        self.image_label.setScaledContents(True)
+        self.image_label.setFixedSize(500,500)
+
+        self.image_layout.addWidget(self.image_label)
+
+        self.vin_count_layout=QHBoxLayout()
+        self.vin_count_text=QLabel("Количество")
+        self.vin_count_text.setFont(QtGui.QFont("Times",20))
+        self.vin_count_text.hide()
+        self.vin_count_layout.addStretch()
+        self.vin_count_layout.addWidget(self.vin_count_text)
+        self.vin_count_layout.addStretch()
+
+
+        self.vin_text_layout=QHBoxLayout()
+        self.vin_text_text=QLabel("Победители")
+        self.vin_text_text.setFont(QtGui.QFont("Times",20))
+        self.vin_text_text.hide()
+        self.vin_text_layout.addStretch()
+        self.vin_text_layout.addWidget(self.vin_text_text)
+        self.vin_text_layout.addStretch()
+
+        self.vin_layout=QHBoxLayout()
+        self.vin_text=QLabel("")
+        self.vin_text.setFont(QtGui.QFont("Times",20))
+        self.vin_text.hide()
+        self.vin_layout.addStretch()
+        self.vin_layout.addWidget(self.vin_text)
+        self.vin_layout.addStretch()
+
+
+
+
+
 
         self.bt_layout=QHBoxLayout()
         self.bt_start=QPushButton("Старт")
         self.bt_start.setFont(QtGui.QFont("Times",20))
+        self.bt_start.clicked.connect(self.start)
+
+        self.bt_next=QPushButton("Следующий приз")
+        self.bt_next.setFont(QtGui.QFont("Times",20))
+        self.bt_next.clicked.connect(self.next_prize)
+        self.bt_next.hide()
+
+        self.bt_back=QPushButton("Предыдущий приз")
+        self.bt_back.setFont(QtGui.QFont("Times",20))
+        self.bt_back.clicked.connect(self.back_prize)
+        self.bt_back.hide()
+
+
+
         self.bt_layout.addWidget(self.bt_start)
+        self.bt_layout.addWidget(self.bt_back)
+        self.bt_layout.addWidget(self.bt_next)
 
 
-        main_layout=QVBoxLayout(self)
-        main_layout.addLayout(self.setting_layout)
-        main_layout.addLayout(self.name_layout)
-        main_layout.addStretch()
-        main_layout.addLayout(self.bt_layout)
+
+
+
+        self.strech_layout=QHBoxLayout()
+        self.label_test=QLabel()
+        self.strech_layout.addStretch()
+        self.strech_layout.addWidget(self.label_test)
+
+        self.main_layout=QVBoxLayout(self)
+        self.main_layout.addLayout(self.setting_layout)
+
+        self.main_layout.addLayout(self.name_layout)
+        self.main_layout.addStretch()
+        self.main_layout.addLayout(self.image_layout)
+        self.main_layout.addLayout(self.vin_count_layout)
+        self.main_layout.addLayout(self.vin_text_layout)
+        self.main_layout.addLayout(self.vin_layout)
+        self.main_layout.addStretch()
+        # self.main_layout.addLayout(self.strech_layout)
+        self.main_layout.addLayout(self.bt_layout)
 
         central_widget=QWidget()
-        central_widget.setLayout(main_layout)
+        central_widget.setLayout(self.main_layout)
 
 
         self.setCentralWidget(central_widget)
@@ -139,19 +211,109 @@ class window(QMainWindow):
         self.mail_text=QLabel()
         self.mail_text.hide()
 
-        self.main_layout=QGridLayout()
-        self.main_layout.addLayout(range_layout_text,0,0)
-        self.main_layout.addLayout(range_layout,1,0)
-        self.main_layout.addWidget(self.table_data,2,0)
-        self.main_layout.addLayout(self.prizes_layout,3,0)
-        self.main_layout.addLayout(self.upravlenie_bt,4,0)
-        self.main_layout.addWidget(self.bt_save_prize)
-        self.main_layout.addWidget(self.mail_text)
+        self.main_layout_form2=QGridLayout()
+        self.main_layout_form2.addLayout(range_layout_text,0,0)
+        self.main_layout_form2.addLayout(range_layout,1,0)
+        self.main_layout_form2.addWidget(self.table_data,2,0)
+        self.main_layout_form2.addLayout(self.prizes_layout,3,0)
+        self.main_layout_form2.addLayout(self.upravlenie_bt,4,0)
+        self.main_layout_form2.addWidget(self.bt_save_prize)
+        self.main_layout_form2.addWidget(self.mail_text)
 
         central_widget=QWidget()
-        central_widget.setLayout(self.main_layout)
-        self.form.setLayout(self.main_layout)
+        central_widget.setLayout(self.main_layout_form2)
+        self.form.setLayout(self.main_layout_form2)
         # self.form.setCentralWidget(central_widget)
+
+    def start(self):
+
+        self.masiv_uchastnikov=[i for i in range(1,self.range_do.value()+1)]
+        for masiv_prizes_id in range (len(self.masiv_prizes["prize_data"])):
+            prize=self.masiv_prizes["prize_data"][masiv_prizes_id]
+            prize_vin=[]
+            for cont_prize in range(self.masiv_prizes["prize_data"][masiv_prizes_id]['count']):
+                vin=choice(self.masiv_uchastnikov)
+                prize_vin.append(vin)
+                self.masiv_uchastnikov.remove(vin)
+            self.masiv_prizes["prize_data"][masiv_prizes_id]["vin"]=prize_vin
+        # print(self.masiv_prizes)
+        # print(self.masiv_uchastnikov)
+
+        self.name_prizes.setText(self.masiv_prizes["prize_data"][0]["name"])
+        image=QPixmap(self.masiv_prizes["prize_data"][0]["image"])
+        self.image_label.setPixmap(image)
+        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][0]["count"]}")
+        self.vin_count_text.show()
+
+        vin_str=""
+        for i in self.masiv_prizes["prize_data"][0]['vin']:
+            # text=QLabel()
+            # text.setFont(QtGui.QFont("Times",20))
+            # self.vin_layout.addWidget(text)
+            # for q in self.masiv_uchastnikov:
+            #     text.setText(str(q))
+            #     time.sleep(1)
+            # text.setText(str(i))
+            vin_str+=str(i)+" "
+        self.vin_text.setText(vin_str)
+        self.vin_text_text.show()
+        self.vin_text.show()
+        self.bt_start.hide()
+        if self.masiv_prizes["row_count"]!=1:
+            self.bt_next.show()
+        self.prize_id=self.masiv_prizes["prize_data"][0]['id']
+
+
+    def next_prize(self):
+        self.prize_id+=1
+        # print(self.masiv_prizes)
+        self.bt_back.show()
+        self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
+        image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
+        self.image_label.setPixmap(image)
+        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
+        self.vin_count_text.show()
+
+        vin_str=""
+        for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
+            vin_str+=str(i)+" "
+        self.vin_text.setText(vin_str)
+        self.vin_text_text.show()
+        self.vin_text.show()
+        self.bt_start.hide()
+        self.bt_next.show()
+        self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
+        if self.prize_id==self.masiv_prizes["row_count"]-1:
+            self.bt_next.hide()
+
+    def back_prize(self):
+        self.prize_id-=1
+        # print(self.masiv_prizes)
+        self.bt_back.show()
+        self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
+        image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
+        self.image_label.setPixmap(image)
+        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
+        self.vin_count_text.show()
+
+        vin_str=""
+        for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
+            vin_str+=str(i)+" "
+        self.vin_text.setText(vin_str)
+        self.vin_text_text.show()
+        self.vin_text.show()
+        self.bt_start.hide()
+        self.bt_next.show()
+        self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
+        if self.prize_id==0:
+            self.bt_back.hide()
+
+
+
+
+
+
+
 
     def form2_show(self):
 
@@ -159,7 +321,7 @@ class window(QMainWindow):
 
 
     def open_file(self):
-        name=QFileDialog.getOpenFileName(self,"Выбор папки","","Файлы изображений (*.png *.jpg *.bmp)")[0]
+        name=QFileDialog.getOpenFileName(self,"Выбор папки","","Файлы изображений (*.png *.jpg *.bmp *.jpeg)")[0]
         self.prizes_put_edit.setText(name)
 
     def add_prize(self):
@@ -201,10 +363,10 @@ class window(QMainWindow):
 
             for i in range(row):
                 prize={}
-                prize["id"]=row+1
+                prize["id"]=i
                 prize["name"]=self.table_data.item(i,0).text()
                 prize["image"]=self.table_data.item(i,1).text()
-                prize["count"]=self.table_data.item(i,2).text()
+                prize["count"]=int(self.table_data.item(i,2).text())
                 self.masiv_prizes["prize_data"].append(prize)
 
             self.form.close()
@@ -243,6 +405,8 @@ class window(QMainWindow):
                 return
 
             self.table_data.removeRow(row)
+
+
 if __name__=="__main__":
     app=QApplication(sys.argv)
     ex=window()
