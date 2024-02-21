@@ -273,7 +273,7 @@ class window(QMainWindow):
 
             for i in vin:
                 vin_sort_str+=str(i)+" "
-                
+
             self.vin_text.setText(vin_str)
             self.vin_sort_text.setText(vin_sort_str)
             self.vin_text_text.show()
@@ -287,7 +287,7 @@ class window(QMainWindow):
             msg = QMessageBox(
                 parent=self,
                 text="Нету призов",
-                icon=QMessageBox.Icon.Warning
+                # icon=QMessageBox.Icon.Warning
 
             )
             msg.setWindowTitle("Window")
