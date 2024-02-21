@@ -287,7 +287,7 @@ class window(QMainWindow):
             msg = QMessageBox(
                 parent=self,
                 text="Нету призов",
-                # icon=QMessageBox.Icon.Warning
+                icon=QMessageBox.Icon.Warning
 
             )
             msg.setWindowTitle("Window")
