@@ -64,6 +64,14 @@ class window(QMainWindow):
         self.vin_layout.addWidget(self.vin_text)
         self.vin_layout.addStretch()
 
+        self.vin_sort_layout=QHBoxLayout()
+        self.vin_sort_text=QLabel("")
+        self.vin_sort_text.setFont(QtGui.QFont("Times",20))
+        self.vin_sort_text.hide()
+        self.vin_sort_layout.addStretch()
+        self.vin_sort_layout.addWidget(self.vin_sort_text)
+        self.vin_sort_layout.addStretch()
+
 
 
 
@@ -108,6 +116,7 @@ class window(QMainWindow):
         self.main_layout.addLayout(self.vin_count_layout)
         self.main_layout.addLayout(self.vin_text_layout)
         self.main_layout.addLayout(self.vin_layout)
+        self.main_layout.addLayout(self.vin_sort_layout)
         self.main_layout.addStretch()
         # self.main_layout.addLayout(self.strech_layout)
         self.main_layout.addLayout(self.bt_layout)
@@ -127,28 +136,28 @@ class window(QMainWindow):
         self.form.setModal(True)
 
 
-        self.range_ot=QSpinBox()
-        self.range_ot.setMinimum(1)
-        self.range_ot.setMaximum(10000000)
+        # self.range_ot=QSpinBox()
+        # self.range_ot.setMinimum(1)
+        # self.range_ot.setMaximum(10000000)
         self.range_do=QSpinBox()
         self.range_do.setMinimum(2)
         self.range_do.setMaximum(10000000)
         self.label_range=QLabel()
 
-        self.label_range.setText("Диапазон участников")
-        self.label_range_ot=QLabel()
-        self.label_range_do=QLabel()
-        self.label_range_ot.setText("От")
-        self.label_range_do.setText("До")
+        self.label_range.setText("Количество участников")
+        # self.label_range_ot=QLabel()
+        # self.label_range_do=QLabel()
+        # self.label_range_ot.setText("От")
+        # self.label_range_do.setText("До")
 
         range_layout_text=QHBoxLayout()
         range_layout_text.addStretch()
         range_layout_text.addWidget(self.label_range)
         range_layout_text.addStretch()
         range_layout=QHBoxLayout()
-        range_layout.addWidget(self.label_range_ot)
-        range_layout.addWidget(self.range_ot)
-        range_layout.addWidget(self.label_range_do)
+        # range_layout.addWidget(self.label_range_ot)
+        # range_layout.addWidget(self.range_ot)
+        # range_layout.addWidget(self.label_range_do)
         range_layout.addWidget(self.range_do)
 
 
@@ -228,42 +237,61 @@ class window(QMainWindow):
     def start(self):
 
         self.masiv_uchastnikov=[i for i in range(1,self.range_do.value()+1)]
-        for masiv_prizes_id in range (len(self.masiv_prizes["prize_data"])):
-            prize=self.masiv_prizes["prize_data"][masiv_prizes_id]
-            prize_vin=[]
-            for cont_prize in range(self.masiv_prizes["prize_data"][masiv_prizes_id]['count']):
-                vin=choice(self.masiv_uchastnikov)
-                prize_vin.append(vin)
-                self.masiv_uchastnikov.remove(vin)
-            self.masiv_prizes["prize_data"][masiv_prizes_id]["vin"]=prize_vin
-        # print(self.masiv_prizes)
-        # print(self.masiv_uchastnikov)
+        if "prize_data" in  self.masiv_prizes.keys():
+            for masiv_prizes_id in range (len(self.masiv_prizes["prize_data"])):
+                prize=self.masiv_prizes["prize_data"][masiv_prizes_id]
+                prize_vin=[]
+                for cont_prize in range(self.masiv_prizes["prize_data"][masiv_prizes_id]['count']):
+                    vin=choice(self.masiv_uchastnikov)
+                    prize_vin.append(vin)
+                    self.masiv_uchastnikov.remove(vin)
+                self.masiv_prizes["prize_data"][masiv_prizes_id]["vin"]=prize_vin
+            # print(self.masiv_prizes)
+            # print(self.masiv_uchastnikov)
 
-        self.name_prizes.setText(self.masiv_prizes["prize_data"][0]["name"])
-        image=QPixmap(self.masiv_prizes["prize_data"][0]["image"])
-        self.image_label.setPixmap(image)
-        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][0]["count"]}")
-        self.vin_count_text.show()
+            self.name_prizes.setText(self.masiv_prizes["prize_data"][0]["name"])
+            image=QPixmap(self.masiv_prizes["prize_data"][0]["image"])
+            self.image_label.setPixmap(image)
+            self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][0]["count"]}")
+            self.vin_count_text.show()
 
-        vin_str=""
-        for i in self.masiv_prizes["prize_data"][0]['vin']:
-            # text=QLabel()
-            # text.setFont(QtGui.QFont("Times",20))
-            # self.vin_layout.addWidget(text)
-            # for q in self.masiv_uchastnikov:
-            #     text.setText(str(q))
-            #     time.sleep(1)
-            # text.setText(str(i))
-            vin_str+=str(i)+" "
-        self.vin_text.setText(vin_str)
-        self.vin_text_text.show()
-        self.vin_text.show()
-        self.bt_start.hide()
-        if self.masiv_prizes["row_count"]!=1:
-            self.bt_next.show()
-        self.prize_id=self.masiv_prizes["prize_data"][0]['id']
+            vin_str=""
+            for i in self.masiv_prizes["prize_data"][0]['vin']:
+                # text=QLabel()
+                # text.setFont(QtGui.QFont("Times",20))
+                # self.vin_layout.addWidget(text)
+                # for q in self.masiv_uchastnikov:
+                #     text.setText(str(q))
+                #     time.sleep(1)
+                # text.setText(str(i))
+                vin_str+=str(i)+" "
+            vin_sort_str=""
 
 
+            vin=self.masiv_prizes["prize_data"][0]['vin']
+            vin.sort()
+
+            for i in vin:
+                vin_sort_str+=str(i)+" "
+                
+            self.vin_text.setText(vin_str)
+            self.vin_sort_text.setText(vin_sort_str)
+            self.vin_text_text.show()
+            self.vin_text.show()
+            self.vin_sort_text.show()
+            self.bt_start.hide()
+            if self.masiv_prizes["row_count"]>1:
+                self.bt_next.show()
+            self.prize_id=self.masiv_prizes["prize_data"][0]['id']
+        else:
+            msg = QMessageBox(
+                parent=self,
+                text="Нету призов",
+                icon=QMessageBox.Icon.Warning
+
+            )
+            msg.setWindowTitle("Window")
+            msg.exec()
     def next_prize(self):
         self.prize_id+=1
         # print(self.masiv_prizes)
@@ -386,12 +414,14 @@ class window(QMainWindow):
         row = self.table_data.currentRow()
 
         if row == -1:
-            msg = QMessageBox.question(
-                self,
-                'Message',
-                "Выберите строку, которую вы хотите удалить.",
-                QDialogButtonBox.Ok
+            msg = QMessageBox(
+                parent=self,
+                text="Выберите строку, которую вы хотите удалить."
+
             )
+            msg.setWindowTitle("Window")
+            msg.exec()
+
             return
         else:
             msg = QMessageBox.question(
