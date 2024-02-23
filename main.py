@@ -267,7 +267,7 @@ class window(QMainWindow):
                 vin_str+=str(i)+" "
             vin_sort_str=""
 
-            vin=self.masiv_prizes["prize_data"][0]['vin']
+            vin=self.masiv_prizes["prize_data"][0]['vin'].copy()
             vin.sort()
 
             for i in vin:
@@ -307,7 +307,7 @@ class window(QMainWindow):
             vin_str+=str(i)+" "
 
         vin_sort_str=""
-        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin']
+        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
         vin.sort()
 
         for i in vin:
@@ -339,7 +339,7 @@ class window(QMainWindow):
             vin_str+=str(i)+" "
 
         vin_sort_str=""
-        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin']
+        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
         vin.sort()
 
         for i in vin:
