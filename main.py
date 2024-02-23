@@ -267,15 +267,15 @@ class window(QMainWindow):
                 vin_str+=str(i)+" "
             vin_sort_str=""
 
-
             vin=self.masiv_prizes["prize_data"][0]['vin']
             vin.sort()
 
             for i in vin:
                 vin_sort_str+=str(i)+" "
+            self.vin_sort_text.setText(vin_sort_str)
 
             self.vin_text.setText(vin_str)
-            self.vin_sort_text.setText(vin_sort_str)
+
             self.vin_text_text.show()
             self.vin_text.show()
             self.vin_sort_text.show()
@@ -305,6 +305,16 @@ class window(QMainWindow):
         vin_str=""
         for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
             vin_str+=str(i)+" "
+
+        vin_sort_str=""
+        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin']
+        vin.sort()
+
+        for i in vin:
+            vin_sort_str+=str(i)+" "
+
+        self.vin_sort_text.setText(vin_sort_str)
+
         self.vin_text.setText(vin_str)
         self.vin_text_text.show()
         self.vin_text.show()
@@ -327,6 +337,15 @@ class window(QMainWindow):
         vin_str=""
         for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
             vin_str+=str(i)+" "
+
+        vin_sort_str=""
+        vin=self.masiv_prizes["prize_data"][self.prize_id]['vin']
+        vin.sort()
+
+        for i in vin:
+            vin_sort_str+=str(i)+" "
+        self.vin_sort_text.setText(vin_sort_str)
+
         self.vin_text.setText(vin_str)
         self.vin_text_text.show()
         self.vin_text.show()
