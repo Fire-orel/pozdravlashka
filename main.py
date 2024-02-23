@@ -422,7 +422,7 @@ class window(QMainWindow):
 
         else:
             self.mail_text.show()
-            self.mail_text.setText("0")
+            self.mail_text.setText("Количество призов больше, чем количество участников!")
 
 
 
