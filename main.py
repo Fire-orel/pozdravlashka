@@ -3,7 +3,7 @@ from PyQt6.QtGui import QPixmap
 from PyQt6 import QtGui
 import sys
 from random import choice
-import time
+from openpyxl import workbook
 class window(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -283,6 +283,25 @@ class window(QMainWindow):
             if self.masiv_prizes["row_count"]>1:
                 self.bt_next.show()
             self.prize_id=self.masiv_prizes["prize_data"][0]['id']
+
+            
+            self.wb=workbook.Workbook()
+            self.ws=self.wb.active
+            self.ws["A1"]="ID"
+            self.ws["B1"]="Название приза"
+            self.ws["C1"]="Количество призов"
+            self.ws["D1"]="Победители"
+            for i in range(len(self.masiv_prizes["prize_data"])):
+                a="A"+str(i+2)
+                b="B"+str(i+2)
+                c="C"+str(i+2)
+                d="D"+str(i+2)
+
+                self.ws[a]=self.masiv_prizes["prize_data"][i]["id"]
+                self.ws[b]=self.masiv_prizes["prize_data"][i]["name"]
+                self.ws[c]=self.masiv_prizes["prize_data"][i]["count"]
+                self.ws[d]=",".join(str(x) for x in self.masiv_prizes["prize_data"][i]["vin"])
+            self.wb.save("vin.xlsx")
         else:
             msg = QMessageBox(
                 parent=self,
