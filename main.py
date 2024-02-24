@@ -273,7 +273,7 @@ class window(QMainWindow):
             self.vin_count_text.show()
 
             vin_str=""
-            
+
             text={}
             for i in self.masiv_prizes["prize_data"][0]['vin']:
                 text[i]=QLabel(str(i),self)
@@ -282,7 +282,7 @@ class window(QMainWindow):
                 self.vin_layout.addWidget(text[i])
 
 
-                # self.fade(text[i])
+                self.unfade(text[i])
 
                 # vin_str+=str(i)+" "
             vin_sort_str=""
