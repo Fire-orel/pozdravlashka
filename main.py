@@ -6,12 +6,14 @@ from random import choice
 from openpyxl import workbook
 import json
 import os.path
+import time
 class window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI_form1()
         self.initUI_form2()
         self.init_variable()
+        self.load_setting()
 
     def init_variable(self):
         self.masiv_prizes={}
@@ -143,6 +145,7 @@ class window(QMainWindow):
         self.initUI_form1()
         self.initUI_form2()
         self.init_variable()
+        self.load_setting()
 
     def initUI_form2(self):
         self.form=QDialog()
@@ -392,20 +395,13 @@ class window(QMainWindow):
 
 
 
-
-
-
-
-
-    def form2_show(self):
-
-
-
-        # print(self.table_data.item(0,0))
+    def load_setting(self):
         try:
             if os.path.exists("setting.json") and self.table_data.item(0,0)==None:
                 with open('setting.json',"r") as f:
                     data=json.load(f)
+
+                self.masiv_prizes=data.copy()
                 self.table_data.setRowCount(len(data["prize_data"]))
                 self.range_do.setValue(data["count_uchastnikov"])
                 for i in range (len(data["prize_data"])):
@@ -413,14 +409,16 @@ class window(QMainWindow):
                     self.table_data.setItem(i,0,QTableWidgetItem(data["prize_data"][i]["name"]))
                     self.table_data.setItem(i,1,QTableWidgetItem(data["prize_data"][i]["image"]))
                     self.table_data.setItem(i,2,QTableWidgetItem(str(data["prize_data"][i]["count"])))
-
-
-
-                    # json.dump(self.masiv_prizes, fp)
-
-            self.form.show()
         except:
-            self.form.show()
+            pass
+
+
+
+
+
+    def form2_show(self):
+
+        self.form.show()
 
 
 
