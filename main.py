@@ -4,11 +4,16 @@ from PyQt6 import QtGui
 import sys
 from random import choice
 from openpyxl import workbook
+import json
+import os.path
 class window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI_form1()
         self.initUI_form2()
+        self.init_variable()
+
+    def init_variable(self):
         self.masiv_prizes={}
         self.masiv_uchastnikov=[]
         self.prize_id=""
@@ -21,6 +26,11 @@ class window(QMainWindow):
         self.setting_layout.addStretch()
         self.setting_layout.addWidget(self.bt_settings)
         self.bt_settings.clicked.connect(self.form2_show)
+
+        self.bt_reboot=QPushButton("Перезапуск",self)
+        self.bt_reboot.hide()
+        self.bt_reboot.clicked.connect(self.reboot)
+        self.setting_layout.addWidget(self.bt_reboot)
 
 
         self.name_layout=QHBoxLayout()
@@ -129,7 +139,10 @@ class window(QMainWindow):
 
         self.showMaximized()
 
-
+    def reboot(self):
+        self.initUI_form1()
+        self.initUI_form2()
+        self.init_variable()
 
     def initUI_form2(self):
         self.form=QDialog()
@@ -284,7 +297,7 @@ class window(QMainWindow):
                 self.bt_next.show()
             self.prize_id=self.masiv_prizes["prize_data"][0]['id']
 
-            
+
             self.wb=workbook.Workbook()
             self.ws=self.wb.active
             self.ws["A1"]="ID"
@@ -302,6 +315,9 @@ class window(QMainWindow):
                 self.ws[c]=self.masiv_prizes["prize_data"][i]["count"]
                 self.ws[d]=",".join(str(x) for x in self.masiv_prizes["prize_data"][i]["vin"])
             self.wb.save("vin.xlsx")
+
+            self.bt_settings.hide()
+            self.bt_reboot.show()
         else:
             msg = QMessageBox(
                 parent=self,
@@ -383,7 +399,29 @@ class window(QMainWindow):
 
     def form2_show(self):
 
-        self.form.show()
+
+
+        # print(self.table_data.item(0,0))
+        try:
+            if os.path.exists("setting.json") and self.table_data.item(0,0)==None:
+                with open('setting.json',"r") as f:
+                    data=json.load(f)
+                self.table_data.setRowCount(len(data["prize_data"]))
+                self.range_do.setValue(data["count_uchastnikov"])
+                for i in range (len(data["prize_data"])):
+
+                    self.table_data.setItem(i,0,QTableWidgetItem(data["prize_data"][i]["name"]))
+                    self.table_data.setItem(i,1,QTableWidgetItem(data["prize_data"][i]["image"]))
+                    self.table_data.setItem(i,2,QTableWidgetItem(str(data["prize_data"][i]["count"])))
+
+
+
+                    # json.dump(self.masiv_prizes, fp)
+
+            self.form.show()
+        except:
+            self.form.show()
+
 
 
     def open_file(self):
@@ -424,6 +462,7 @@ class window(QMainWindow):
             # self.mail_text.show()
             # self.mail_text.setText("1")
             row=self.table_data.rowCount()
+            self.masiv_prizes["count_uchastnikov"]=self.range_do.value()
             self.masiv_prizes["row_count"]=row
             self.masiv_prizes["prize_data"]=[]
 
@@ -435,7 +474,12 @@ class window(QMainWindow):
                 prize["count"]=int(self.table_data.item(i,2).text())
                 self.masiv_prizes["prize_data"].append(prize)
 
+
+            with open('setting.json', 'w') as fp:
+                json.dump(self.masiv_prizes, fp)
+
             self.form.close()
+
 
 
 
