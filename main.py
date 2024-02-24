@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog,QTableWidgetItem,QMessageBox,QDialogButtonBox
+from PyQt6.QtWidgets import QMainWindow,QApplication,QPushButton,QWidget,QVBoxLayout,QHBoxLayout,QSpinBox,QLabel,QLineEdit,QGridLayout,QTableWidget,QFileDialog,QDialog,QTableWidgetItem,QMessageBox,QDialogButtonBox,QGraphicsOpacityEffect
 from PyQt6.QtGui import QPixmap
-from PyQt6 import QtGui
+from PyQt6 import QtGui,QtCore
 import sys
 from random import choice
 from openpyxl import workbook
@@ -69,12 +69,13 @@ class window(QMainWindow):
         self.vin_text_layout.addStretch()
 
         self.vin_layout=QHBoxLayout()
+        # self.vin_layout=QGridLayout()
         self.vin_text=QLabel("")
         self.vin_text.setFont(QtGui.QFont("Times",20))
         self.vin_text.hide()
         self.vin_layout.addStretch()
         self.vin_layout.addWidget(self.vin_text)
-        self.vin_layout.addStretch()
+        # self.vin_layout.addStretch()
 
         self.vin_sort_layout=QHBoxLayout()
         self.vin_sort_text=QLabel("")
@@ -272,16 +273,20 @@ class window(QMainWindow):
             self.vin_count_text.show()
 
             vin_str=""
+            
+            text={}
             for i in self.masiv_prizes["prize_data"][0]['vin']:
-                # text=QLabel()
-                # text.setFont(QtGui.QFont("Times",20))
-                # self.vin_layout.addWidget(text)
-                # for q in self.masiv_uchastnikov:
-                #     text.setText(str(q))
-                #     time.sleep(1)
-                # text.setText(str(i))
-                vin_str+=str(i)+" "
+                text[i]=QLabel(str(i),self)
+
+                text[i].setFont(QtGui.QFont("Times",20))
+                self.vin_layout.addWidget(text[i])
+
+
+                # self.fade(text[i])
+
+                # vin_str+=str(i)+" "
             vin_sort_str=""
+            self.vin_layout.addStretch()
 
             vin=self.masiv_prizes["prize_data"][0]['vin'].copy()
             vin.sort()
@@ -293,7 +298,8 @@ class window(QMainWindow):
             self.vin_text.setText(vin_str)
 
             self.vin_text_text.show()
-            self.vin_text.show()
+            # self.vin_text.show()
+            # self.unfade(self.vin_text)
             self.vin_sort_text.show()
             self.bt_start.hide()
             if self.masiv_prizes["row_count"]>1:
@@ -330,6 +336,29 @@ class window(QMainWindow):
             )
             msg.setWindowTitle("Window")
             msg.exec()
+
+
+
+    def fade(self, widget):
+        self.effect = QGraphicsOpacityEffect()
+        widget.setGraphicsEffect(self.effect)
+
+        self.animation = QtCore.QPropertyAnimation(self.effect, b"opacity")
+        self.animation.setDuration(1000)
+        self.animation.setStartValue(1)
+        self.animation.setEndValue(0)
+        self.animation.start()
+
+    def unfade(self, widget):
+        self.effect = QGraphicsOpacityEffect()
+        widget.setGraphicsEffect(self.effect)
+
+        self.animation = QtCore.QPropertyAnimation(self.effect, b"opacity")
+        self.animation.setDuration(1000)
+        self.animation.setStartValue(0)
+        self.animation.setEndValue(1)
+        self.animation.start()
+
     def next_prize(self):
         self.prize_id+=1
         # print(self.masiv_prizes)
