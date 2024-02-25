@@ -261,11 +261,12 @@ class window(QMainWindow):
             # self.text[self.current_index].setStyleSheet("background-color: lightgreen")
             self.unfade(self.text[self.current_index])
             self.current_index += 1
-            QtCore.QTimer.singleShot(1000, self.animate_numbers)  # Вызываем метод снова через 500 миллисекунд
+            QtCore.QTimer.singleShot(500, self.animate_numbers)  # Вызываем метод снова через 500 миллисекунд
 
         else:
             self.vin_sort_text.show()
             self.unfade(self.vin_sort_text)
+            self.proverka_bt()
     def start(self):
 
         self.masiv_uchastnikov=[i for i in range(1,self.range_do.value()+1)]
@@ -325,8 +326,8 @@ class window(QMainWindow):
             # self.unfade(self.vin_text)
             # self.vin_sort_text.show()
             self.bt_start.hide()
-            if self.masiv_prizes["row_count"]>1:
-                self.bt_next.show()
+            # if self.masiv_prizes["row_count"]>1:
+            #     self.bt_next.show()
             self.prize_id=self.masiv_prizes["prize_data"][0]['id']
 
 
@@ -377,16 +378,20 @@ class window(QMainWindow):
         widget.setGraphicsEffect(self.effect)
 
         self.animation = QtCore.QPropertyAnimation(self.effect, b"opacity")
-        self.animation.setDuration(1000)
+        self.animation.setDuration(500)
         self.animation.setStartValue(0)
         self.animation.setEndValue(1)
         self.animation.start()
 
     def next_prize(self):
         self.vin_sort_text.hide()
+
+        self.bt_back.hide()
+        self.bt_next.hide()
+
         self.prize_id+=1
         # print(self.masiv_prizes)
-        self.bt_back.show()
+        # self.bt_back.show()
         self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
         image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
         self.image_label.setPixmap(image)
@@ -438,16 +443,18 @@ class window(QMainWindow):
         self.vin_text_text.show()
         # self.vin_text.show()
         self.bt_start.hide()
-        self.bt_next.show()
-        self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
-        if self.prize_id==self.masiv_prizes["row_count"]-1:
-            self.bt_next.hide()
+
+
+
 
     def back_prize(self):
+        self.bt_back.hide()
+        self.bt_next.hide()
+
         self.vin_sort_text.hide()
         self.prize_id-=1
         # print(self.masiv_prizes)
-        self.bt_back.show()
+        # self.bt_back.show()
         self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
         image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
         self.image_label.setPixmap(image)
@@ -496,12 +503,25 @@ class window(QMainWindow):
         self.vin_text_text.show()
         # self.vin_text.show()
         self.bt_start.hide()
-        self.bt_next.show()
-        self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
+
+    # def proverka_bt_back(self):
+    #     self.bt_next.show()
+    #     self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
+    #     if self.prize_id==0:
+    #         self.bt_back.hide()
+
+    def proverka_bt(self):
+
         if self.prize_id==0:
-            self.bt_back.hide()
-
-
+            self.bt_next.show()
+        elif self.prize_id== len(self.masiv_prizes["prize_data"])-1:
+            self.bt_back.show()
+        else:
+            self.bt_back.show()
+            self.bt_next.show()
+        # # self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
+        # if self.prize_id==self.masiv_prizes["row_count"]-1:
+        #     self.bt_next.hide()
 
     def load_setting(self):
         try:
