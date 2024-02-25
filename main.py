@@ -18,7 +18,7 @@ class window(QMainWindow):
     def init_variable(self):
         self.masiv_prizes={}
         self.masiv_uchastnikov=[]
-        self.prize_id=""
+        self.prize_id=0
 
     def initUI_form1(self):
         self.setWindowTitle("Рандомайзер подарков")
@@ -251,6 +251,21 @@ class window(QMainWindow):
         self.form.setLayout(self.main_layout_form2)
         # self.form.setCentralWidget(central_widget)
 
+    def start_animation(self):
+        self.animate_numbers()
+
+    def animate_numbers(self):
+        if self.current_index < len(self.masiv_prizes["prize_data"][self.prize_id]['vin']):
+
+            self.text[self.current_index].setText(str(self.masiv_prizes["prize_data"][self.prize_id]['vin'][self.current_index]))
+            # self.text[self.current_index].setStyleSheet("background-color: lightgreen")
+            self.unfade(self.text[self.current_index])
+            self.current_index += 1
+            QtCore.QTimer.singleShot(1000, self.animate_numbers)  # Вызываем метод снова через 500 миллисекунд
+
+        else:
+            self.vin_sort_text.show()
+            self.unfade(self.vin_sort_text)
     def start(self):
 
         self.masiv_uchastnikov=[i for i in range(1,self.range_do.value()+1)]
@@ -274,19 +289,26 @@ class window(QMainWindow):
 
             vin_str=""
 
-            self.text={}
+            self.text=[]
+            count=0
+            self.current_index=0
             for i in self.masiv_prizes["prize_data"][0]['vin']:
-                # self.text[i]=QLabel(str(i),self)
+                self.text.append(QLabel(""))
 
-                # self.text[i].setFont(QtGui.QFont("Times",20))
-                # self.vin_layout.addWidget(self.text[i])
+                self.text[count].setFont(QtGui.QFont("Times",20))
+                self.vin_layout.addWidget(self.text[count])
 
 
-                # self.unfade(text[i])
+                # QApplication.processEvents()
+                # self.unfade(self.text[i])
 
-                vin_str+=str(i)+" "
+
+                count+=1
+                # vin_str+=str(i)+" "
+            self.start_animation()
             vin_sort_str=""
             self.vin_layout.addStretch()
+
 
 
             vin=self.masiv_prizes["prize_data"][0]['vin'].copy()
@@ -299,9 +321,9 @@ class window(QMainWindow):
             self.vin_text.setText(vin_str)
 
             self.vin_text_text.show()
-            self.vin_text.show()
-            self.unfade(self.vin_text)
-            self.vin_sort_text.show()
+            # self.vin_text.show()
+            # self.unfade(self.vin_text)
+            # self.vin_sort_text.show()
             self.bt_start.hide()
             if self.masiv_prizes["row_count"]>1:
                 self.bt_next.show()
@@ -361,7 +383,7 @@ class window(QMainWindow):
         self.animation.start()
 
     def next_prize(self):
-
+        self.vin_sort_text.hide()
         self.prize_id+=1
         # print(self.masiv_prizes)
         self.bt_back.show()
@@ -372,10 +394,36 @@ class window(QMainWindow):
         self.vin_count_text.show()
 
 
+        stretch_item=self.vin_layout.takeAt(self.vin_layout.count()-1)
+
+        if stretch_item:
+            del stretch_item
+
+
+        for i in range(len(self.text)):
+            self.vin_layout.removeWidget(self.text[i])
+            self.text[i].setParent(None)
+
 
         vin_str=""
+        self.text=[]
+        count=0
+        self.current_index=0
         for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
-            vin_str+=str(i)+" "
+            self.text.append(QLabel(""))
+
+            self.text[count].setFont(QtGui.QFont("Times",20))
+            self.vin_layout.addWidget(self.text[count])
+
+
+            # QApplication.processEvents()
+            # self.unfade(self.text[i])
+
+
+            count+=1
+            # vin_str+=str(i)+" "
+        self.start_animation()
+        self.vin_layout.addStretch()
 
         vin_sort_str=""
         vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
@@ -386,9 +434,9 @@ class window(QMainWindow):
 
         self.vin_sort_text.setText(vin_sort_str)
 
-        self.vin_text.setText(vin_str)
+        # self.vin_text.setText(vin_str)
         self.vin_text_text.show()
-        self.vin_text.show()
+        # self.vin_text.show()
         self.bt_start.hide()
         self.bt_next.show()
         self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
@@ -396,6 +444,7 @@ class window(QMainWindow):
             self.bt_next.hide()
 
     def back_prize(self):
+        self.vin_sort_text.hide()
         self.prize_id-=1
         # print(self.masiv_prizes)
         self.bt_back.show()
@@ -405,9 +454,35 @@ class window(QMainWindow):
         self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
         self.vin_count_text.show()
 
+        stretch_item=self.vin_layout.takeAt(self.vin_layout.count()-1)
+
+        if stretch_item:
+            del stretch_item
+
+        for i in range(len(self.text)):
+
+            self.vin_layout.removeWidget(self.text[i])
+            self.text[i].setParent(None)
+
         vin_str=""
+        self.text=[]
+        count=0
+        self.current_index=0
         for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
-            vin_str+=str(i)+" "
+            self.text.append(QLabel(""))
+
+            self.text[count].setFont(QtGui.QFont("Times",20))
+            self.vin_layout.addWidget(self.text[count])
+
+
+            # QApplication.processEvents()
+            # self.unfade(self.text[i])
+
+
+            count+=1
+            # vin_str+=str(i)+" "
+        self.start_animation()
+        self.vin_layout.addStretch()
 
         vin_sort_str=""
         vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
@@ -417,9 +492,9 @@ class window(QMainWindow):
             vin_sort_str+=str(i)+" "
         self.vin_sort_text.setText(vin_sort_str)
 
-        self.vin_text.setText(vin_str)
+        # self.vin_text.setText(vin_str)
         self.vin_text_text.show()
-        self.vin_text.show()
+        # self.vin_text.show()
         self.bt_start.hide()
         self.bt_next.show()
         self.prize_id=self.masiv_prizes["prize_data"][self.prize_id]['id']
