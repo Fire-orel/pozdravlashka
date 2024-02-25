@@ -274,19 +274,20 @@ class window(QMainWindow):
 
             vin_str=""
 
-            text={}
+            self.text={}
             for i in self.masiv_prizes["prize_data"][0]['vin']:
-                text[i]=QLabel(str(i),self)
+                # self.text[i]=QLabel(str(i),self)
 
-                text[i].setFont(QtGui.QFont("Times",20))
-                self.vin_layout.addWidget(text[i])
+                # self.text[i].setFont(QtGui.QFont("Times",20))
+                # self.vin_layout.addWidget(self.text[i])
 
 
-                self.unfade(text[i])
+                # self.unfade(text[i])
 
-                # vin_str+=str(i)+" "
+                vin_str+=str(i)+" "
             vin_sort_str=""
             self.vin_layout.addStretch()
+
 
             vin=self.masiv_prizes["prize_data"][0]['vin'].copy()
             vin.sort()
@@ -298,8 +299,8 @@ class window(QMainWindow):
             self.vin_text.setText(vin_str)
 
             self.vin_text_text.show()
-            # self.vin_text.show()
-            # self.unfade(self.vin_text)
+            self.vin_text.show()
+            self.unfade(self.vin_text)
             self.vin_sort_text.show()
             self.bt_start.hide()
             if self.masiv_prizes["row_count"]>1:
@@ -360,6 +361,7 @@ class window(QMainWindow):
         self.animation.start()
 
     def next_prize(self):
+
         self.prize_id+=1
         # print(self.masiv_prizes)
         self.bt_back.show()
@@ -368,6 +370,8 @@ class window(QMainWindow):
         self.image_label.setPixmap(image)
         self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
         self.vin_count_text.show()
+
+
 
         vin_str=""
         for i in self.masiv_prizes["prize_data"][self.prize_id]['vin']:
