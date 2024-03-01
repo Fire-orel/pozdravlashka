@@ -24,7 +24,7 @@ class window(QMainWindow):
 
     # инициализация формы 1(главный экран)
     def initUI_form1(self):
-        self.setWindowTitle("Рандомайзер подарков")
+        self.setWindowTitle("Розыгрыш Подарков")
 
         # определение кнопки "Настройки"
         self.setting_layout=QHBoxLayout(self)
@@ -41,7 +41,7 @@ class window(QMainWindow):
 
         # определение текста "Шапки/название подарка"
         self.name_layout=QHBoxLayout()
-        self.name_prizes=QLabel("Стартовый текст")
+        self.name_prizes=QLabel("Розыгрыш Подарков")
         self.name_prizes.setFont(QtGui.QFont("Times",30)) # изменения шрифта и его размера
         self.name_layout.addStretch()
         self.name_layout.addWidget(self.name_prizes)
@@ -54,7 +54,7 @@ class window(QMainWindow):
         self.image_label.setPixmap(self.image)
         self.image_label.setScaledContents(True)
         # размеры картинки"500,500" по дефолту
-        self.image_label.setFixedSize(500,500)
+        self.image_label.setFixedSize(600,600)
 
         self.image_layout.addWidget(self.image_label)
 
@@ -122,7 +122,6 @@ class window(QMainWindow):
         self.bt_layout.addWidget(self.bt_back)
         self.bt_layout.addWidget(self.bt_next)
 
-
         # self.strech_layout=QHBoxLayout()
         # self.label_test=QLabel()
         # self.strech_layout.addStretch()
@@ -132,6 +131,7 @@ class window(QMainWindow):
         self.main_layout=QVBoxLayout(self)
         self.main_layout.addLayout(self.setting_layout)
 
+        self.main_layout.addStretch()
         self.main_layout.addLayout(self.name_layout)
         self.main_layout.addStretch()
         self.main_layout.addLayout(self.image_layout)
@@ -271,7 +271,7 @@ class window(QMainWindow):
 
             self.unfade(self.text[self.current_index])
             self.current_index += 1
-            QtCore.QTimer.singleShot(1300, self.animate_numbers)  # Вызываем метод снова через 1300 миллисекунд
+            QtCore.QTimer.singleShot(1400, self.animate_numbers)  # Вызываем метод снова через 1300 миллисекунд
 
         else:
             self.vin_sort_text.show()
@@ -284,7 +284,7 @@ class window(QMainWindow):
         widget.setGraphicsEffect(self.effect)
 
         self.animation = QtCore.QPropertyAnimation(self.effect, b"opacity")
-        self.animation.setDuration(1300)  # Вызываем метод снова через 1300 миллисекунд
+        self.animation.setDuration(1400)  # Вызываем метод снова через 1300 миллисекунд
         self.animation.setStartValue(0)
         self.animation.setEndValue(1)
         self.animation.start()
@@ -335,7 +335,7 @@ class window(QMainWindow):
                 self.name_prizes.setText(self.masiv_prizes["prize_data"][0]["name"])
                 image=QPixmap(self.masiv_prizes["prize_data"][0]["image"])
                 self.image_label.setPixmap(image)
-                self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][0]["count"]}")
+                self.vin_count_text.setText(f"Количество победителей: {self.masiv_prizes["prize_data"][0]["count"]}")
                 self.vin_count_text.show()
 
                 vin_str=""
@@ -358,7 +358,7 @@ class window(QMainWindow):
                     count+=1
                     # vin_str+=str(i)+" "
                 self.start_animation()
-                vin_sort_str="Победители отсортированые: "
+                vin_sort_str="Отсортированные: "
                 self.vin_layout.addStretch()
 
 
@@ -387,22 +387,22 @@ class window(QMainWindow):
             else:
                 msg = QMessageBox(
                     parent=self,
-                    text="Нету призов",
+                    text="Нету призов!",
                     icon=QMessageBox.Icon.Warning
 
                 )
-                msg.setWindowTitle("Window")
+                msg.setWindowTitle("Предупреждение")
                 msg.exec()
 
         except PermissionError:
 
                 msg_error = QMessageBox(
                 parent=self,
-                text="Ошибка перезаписи Exel файла проверки что он закрыт ",
+                text="Ошибка перезаписи, закройте Exel файл!",
                 icon=QMessageBox.Icon.Warning
 
             )
-                msg_error.setWindowTitle("Window")
+                msg_error.setWindowTitle("Предупреждение")
                 self.reboot()
                 msg_error.exec()
 
@@ -418,7 +418,7 @@ class window(QMainWindow):
         self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
         image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
         self.image_label.setPixmap(image)
-        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
+        self.vin_count_text.setText(f"Количество победителей: {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
         self.vin_count_text.show()
 
 
@@ -447,7 +447,7 @@ class window(QMainWindow):
         self.start_animation()
         self.vin_layout.addStretch()
 
-        vin_sort_str="Победители отсортированые: "
+        vin_sort_str="Отсортированные: "
         vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
         vin.sort()
 
@@ -473,7 +473,7 @@ class window(QMainWindow):
         self.name_prizes.setText(self.masiv_prizes["prize_data"][self.prize_id]["name"])
         image=QPixmap(self.masiv_prizes["prize_data"][self.prize_id]["image"])
         self.image_label.setPixmap(image)
-        self.vin_count_text.setText(f"Количество победителей {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
+        self.vin_count_text.setText(f"Количество победителей: {self.masiv_prizes["prize_data"][self.prize_id]["count"]}")
         self.vin_count_text.show()
 
         stretch_item=self.vin_layout.takeAt(self.vin_layout.count()-1)
@@ -500,7 +500,7 @@ class window(QMainWindow):
         self.start_animation()
         self.vin_layout.addStretch()
 
-        vin_sort_str="Победители отсортированые: "
+        vin_sort_str="Отсортированные: "
         vin=self.masiv_prizes["prize_data"][self.prize_id]['vin'].copy()
         vin.sort()
 
@@ -574,7 +574,7 @@ class window(QMainWindow):
 
         else:
             self.mail_text.show()
-            self.mail_text.setText("Не все поля заполнены!!!!")
+            self.mail_text.setText("Не все поля заполнены!")
 
     # функция сохранения призов
     def save(self):
@@ -618,17 +618,17 @@ class window(QMainWindow):
         if row == -1:
             msg = QMessageBox(
                 parent=self,
-                text="Выберите строку, которую вы хотите удалить."
+                text="Выберите строку, которую хотите удалить!"
 
             )
-            msg.setWindowTitle("Window")
+            msg.setWindowTitle("Предупреждение")
             msg.exec()
 
             return
         else:
             msg = QMessageBox.question(
                 self,
-                "Внимание подтвердите удаление строки!",
+                "Внимание! Подтвердите удаление строки!",
                 "Вы действительно хотите удалить "
                 f"строку <b style='color: red;'>{row+1}</b> ?"
             )
@@ -646,10 +646,10 @@ if __name__=="__main__":
     sys.exit(app.exec())
 
 
-# строки 274,287 изменения скорости анимации (значения должны быть ОДИНАКОВЫМИ)
-# 45 шрифт название приза
-# 57 размеры картинки"500,500" по дефолту
-# 270 ширина между чисталми победителей
-# 91 шрифт победителей отсортированных
-# 350,443,496 размеры шрифта победителей
-# 141-148 отступы между кнопками старт и текстами с победителями
+# 274,287 - изменения скорости анимации (значения должны быть ОДИНАКОВЫМИ)
+# 45 - шрифт название приза
+# 57 - размеры картинки"500,500" по дефолту
+# 270 - ширина между чисталми победителей
+# 91 - шрифт победителей отсортированных
+# 350,443,496 - размеры шрифта победителей
+# 141-148 - отступы между кнопками старт и текстами с победителями
